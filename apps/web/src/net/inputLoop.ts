@@ -9,7 +9,7 @@ export type LocalPose = {
 
 export function sendMove(room: ClientRoom, pose: LocalPose): void {
     room.send("move", {
-        pos: { x: pose.x, y: pose.y, z: pose.z },
-        rotY: pose.rotY,
+        position: { x: pose.x, y: pose.y, z: pose.z },
+        rotationY: pose.rotY,
     });
 }

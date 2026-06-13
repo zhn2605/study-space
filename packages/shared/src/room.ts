@@ -4,31 +4,26 @@ export type Vec3 = {
     z: number 
 };
 
-export type TimerState = {
+export type TimerView = {
     durationSec: number;
-    startedAt: number | null;
-    pausedRemainingSec: number | null;
+    startedAt: number;
+    pausedRemainingSec: number;
 };
 
-export type Player = {
+export type PlayerView = {
     sessionId: string;
     name: string;
     position: Vec3;
     rotationY: number;
-    countryCode: string | null;
-    pingMs: number | null;
-    timer: TimerState;
+    color: string;
+    countryCode: string;
+    pingMs: number;
+    timer: TimerView;
 };
 
-export type RoomState = {
+export type RoomStateView = {
     name: string;
     isPublic: boolean;
-    password: string | null;
-    players: Record<string, Player>;
-};
-
-export const DEFAULT_TIMER: TimerState = {
-    durationSec: 25 * 60,
-    startedAt: null,
-    pausedRemainingSec: null,
+    password: string;
+    players: Map<string, PlayerView>;
 };

@@ -15,16 +15,16 @@ export class TimerSchema extends Schema {
 export class PlayerSchema extends Schema {
     @type("string") sessionId: string = "";
     @type("string") name: string = "";
-    @type(Vec3Schema) position: Vec3Schema = new Vec3Schema();
+    @type(Vec3Schema) position = new Vec3Schema();
     @type("number") rotationY: number = 0;
     @type("string") countryCode: string = "";
-    @type("number") ping: number = 0;
-    @type(TimerSchema) timer: TimerSchema = new TimerSchema();
+    @type("number") ping: number = -1;
+    @type(TimerSchema) timer = new TimerSchema();
 }
 
 export class RoomStateSchema extends Schema {
     @type("string") name: string = "";
     @type("boolean") isPublic: boolean = true;
     @type("string") password: string = "";
-    @type({ map: PlayerSchema }) players: MapSchema<PlayerSchema> = new MapSchema();
+    @type({ map: PlayerSchema }) players = new MapSchema<PlayerSchema>();
 }
