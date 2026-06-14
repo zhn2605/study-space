@@ -2,6 +2,14 @@ import { Room, type Client } from "colyseus";
 import { PlayerSchema, RoomStateSchema } from "./schema.js";
 import { validateClientInput } from "./validation";
 
+function colorForId(id: string): string {
+    let h = 0;
+    for (let i = 0; i < id.length; i++) {
+        h = (h * 31 + id.charCodeAt(i)) >>> 0;
+    }
+    return `hsl(${h % 360}, 65%, 55%)`;
+}
+
 type JoinOptions = { 
     name?: string; 
     countryCode?: string; 
@@ -47,6 +55,7 @@ export class StudyRoom extends Room {
         const player = new PlayerSchema();
         player.sessionId = client.sessionId;
         player.name = (options.name ?? "Anonymous").slice(0, 20); // limit name length
+        player.color = colorForId(client.sessionId);
         this.state.players.set(client.sessionId, player);
         console.log(`[room] +${client.sessionId} as ${player.name}`);
     }

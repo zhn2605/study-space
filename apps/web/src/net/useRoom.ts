@@ -1,8 +1,14 @@
+import type { PlayerView } from "@study-space/shared";
 import { useEffect, useState } from "react";
 import { joinStudyRoom, type ClientRoom } from "./colyseusClient";
 
-export function useRoom(name: string | null): ClientRoom | null {
-    const [room, setRoom] = useState<ClientRoom | null>(null);
+export type RoomBundle = {
+    room: ClientRoom;
+    players: Record<string, PlayerView>;
+};
+
+export function useRoom(name: string | null): RoomBundle | null {
+    const [bundle, setBundle] = useState<RoomBundle | null>(null);
 
     useEffect(() => {
         if (!name) return;
@@ -16,15 +22,37 @@ export function useRoom(name: string | null): ClientRoom | null {
                     return;
                 }
                 joined = room;
-                setRoom(room);
+                const snapshot = (): void => {
+                    const out: Record<string, PlayerView> = {};
+                    room.state.players.forEach((p, id) => {
+                        out[id] = {
+                            sessionId: id,
+                            name: p.name,
+                            position: { x: p.position.x, y: p.position.y, z: p.position.z },
+                            rotationY: p.rotationY,
+                            color: p.color,
+                            countryCode: p.countryCode,
+                            ping: p.ping,
+                            timer: {
+                                durationSec: p.timer.durationSec,
+                                startedAt: p.timer.startedAt,
+                                pausedRemainingSec: p.timer.pausedRemainingSec,
+                            },
+                        };
+                    });
+                    setBundle({ room, players: out });
+                };
+                room.onStateChange(snapshot);
+                snapshot();
             })
-            .catch((err) => console.error("[room] join failed:", err));
+            .catch((err) => console.error("[room] join failed", err));
 
         return () => {
             cancelled = true;
             joined?.leave();
-            setRoom(null);
+            setBundle(null);
         };
     }, [name]);
-    return room;
+
+    return bundle;
 }

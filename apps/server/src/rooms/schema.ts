@@ -17,6 +17,7 @@ export class PlayerSchema extends Schema {
     @type("string") name: string = "";
     @type(Vec3Schema) position = new Vec3Schema();
     @type("number") rotationY: number = 0;
+    @type("string") color: string = "";
     @type("string") countryCode: string = "";
     @type("number") ping: number = -1;
     @type(TimerSchema) timer = new TimerSchema();

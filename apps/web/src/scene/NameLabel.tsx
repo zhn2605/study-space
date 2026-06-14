@@ -10,9 +10,9 @@ export function NameLabel({ x, y, z, name }: Props): JSX.Element {
                 style={{
                     backgroundColor: "rgba(0, 0, 0, 0.55)",
                     color: "white",
-                    padding: "0.1vh 0.5vh",
-                    borderRadius: ".4vh",
-                    fontSize: "1vh",
+                    padding: "1vh 1vh",
+                    borderRadius: "1vh",
+                    fontSize: "3vh",
                     fontFamily: "system-ui",
                     whiteSpace: "nowrap",
                 }}>

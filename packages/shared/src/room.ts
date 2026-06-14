@@ -1,13 +1,13 @@
-export type Vec3 = { 
-    x: number; 
-    y: number; 
-    z: number 
+export type Vec3 = {
+    x: number;
+    y: number;
+    z: number;
 };
 
 export type TimerView = {
     durationSec: number;
-    startedAt: number;
-    pausedRemainingSec: number;
+    startedAt: number;          // 0 = not started
+    pausedRemainingSec: number; // -1 = not paused
 };
 
 export type PlayerView = {
@@ -15,9 +15,9 @@ export type PlayerView = {
     name: string;
     position: Vec3;
     rotationY: number;
-    color: string;
-    countryCode: string;
-    pingMs: number;
+    color: string;       // server-assigned, stable across clients
+    countryCode: string; // "" = unknown
+    ping: number;        // -1 = not measured
     timer: TimerView;
 };
 
