@@ -1,21 +1,21 @@
 import type { PlayerView } from "@study-space/shared";
 import { useEffect, useState } from "react";
-import { joinStudyRoom, type ClientRoom } from "./colyseusClient";
+import { joinRoomById, type ClientRoom } from "./colyseusClient";
 
 export type RoomBundle = {
     room: ClientRoom;
     players: Record<string, PlayerView>;
 };
 
-export function useRoom(name: string | null): RoomBundle | null {
+export function useRoom(name: string | null, roomId: string | null, passcode: string | null): RoomBundle | null {
     const [bundle, setBundle] = useState<RoomBundle | null>(null);
 
     useEffect(() => {
-        if (!name) return;
+        if (!name || !roomId) return;
         let cancelled = false;
         let joined: ClientRoom | null = null;
 
-        joinStudyRoom(name)
+        joinRoomById(roomId, name, passcode)
             .then((room) => {
                 if (cancelled) {
                     room.leave();
@@ -43,7 +43,6 @@ export function useRoom(name: string | null): RoomBundle | null {
                     setBundle({ room, players: out });
                 };
                 room.onStateChange(snapshot);
-                snapshot();
             })
             .catch((err) => console.error("[room] join failed", err));
 
@@ -52,7 +51,7 @@ export function useRoom(name: string | null): RoomBundle | null {
             joined?.leave();
             setBundle(null);
         };
-    }, [name]);
+    }, [name, roomId, passcode]);
 
     return bundle;
 }

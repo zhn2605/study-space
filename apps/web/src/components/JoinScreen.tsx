@@ -27,7 +27,7 @@ export function JoinScreen(): JSX.Element {
                 />
             </label>
             <button type="submit" disabled={draft.trim().length === 0}>
-                Join
+                Continue
             </button>
         </form>
     )

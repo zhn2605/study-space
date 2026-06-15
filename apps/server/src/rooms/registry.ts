@@ -17,6 +17,7 @@ export type CreateInput = {
 
 export class RoomRegistry{
     private rooms = new Map<string, Entry>();
+    private mmIdByRegistryId = new Map<string, string>();
 
     create(input: CreateInput): { id: string } {
         const trimmed = input.name.trim();
@@ -33,6 +34,14 @@ export class RoomRegistry{
             playerCount: 0,
         });
         return { id };
+    }
+
+    bindMatchMakerId(registryId: string, mmId: string): void {
+        this.mmIdByRegistryId.set(registryId, mmId);
+    }
+
+    getMatchMakerId(registryId: string): string | undefined {
+        return this.mmIdByRegistryId.get(registryId);
     }
 
     listPublic(): RoomSummary[] {
