@@ -5,7 +5,7 @@ import { useKeyboard } from "../hooks/useKeyboard";
 import type { ClientRoom } from "../net/colyseusClient";
 import { sendMove, type LocalPose } from "../net/inputLoop";
 import { CameraRig } from "./CameraRig";
-import { Ground } from "./Ground";
+import { CafeEnvironment } from "./Environment";
 import { NameLabel } from "./NameLabel";
 import { PlayerCharacter } from "./PlayerCharacter";
 
@@ -70,8 +70,8 @@ function SceneInner({ room, players }: { room: ClientRoom; players: Record<strin
         <>
             <ambientLight intensity={0.7} />
             <directionalLight position={[10, 12, 6]} intensity={0.9} castShadow />
-            <Ground />
-            {/* <CafeEnvironment /> */}
+            {/* <Ground /> */}
+            <CafeEnvironment />
             <CameraRig x={pose.current.x} y={pose.current.y} z={pose.current.z} />
             {Object.values(players).map((p) => {
                 const isSelf = p.sessionId === selfId;
