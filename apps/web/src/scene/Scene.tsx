@@ -70,7 +70,6 @@ function SceneInner({ room, players }: { room: ClientRoom; players: Record<strin
         <>
             <ambientLight intensity={0.7} />
             <directionalLight position={[10, 12, 6]} intensity={0.9} castShadow />
-            {/* <Ground /> */}
             <CafeEnvironment />
             <CameraRig x={pose.current.x} y={pose.current.y} z={pose.current.z} />
             {Object.values(players).map((p) => {

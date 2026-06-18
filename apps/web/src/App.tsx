@@ -1,7 +1,7 @@
 import type { JSX } from "react";
+import { HUD } from "./components/HUD";
 import { JoinScreen } from "./components/JoinScreen";
 import { Lobby } from "./components/Lobby";
-import { PlayerList } from "./components/PlayerList";
 import { useRoom } from "./net/useRoom";
 import { Scene } from "./scene/Scene";
 import { useSession } from "./state/session";
@@ -18,7 +18,7 @@ export default function App(): JSX.Element {
   return (
     <>
       <Scene room={bundle.room} players={bundle.players} />
-      <PlayerList players={bundle.players} selfId={bundle.room.sessionId} />
+      <HUD room={bundle.room} players={bundle.players} />
     </>
   );
 }

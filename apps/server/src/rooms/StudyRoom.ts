@@ -1,4 +1,5 @@
 import { Room, type Client } from "colyseus";
+import { applyTimer } from "../timer/applyTimer";
 import { registry } from "./registryInstance";
 import { PlayerSchema, RoomStateSchema } from "./schema.js";
 import { validateClientInput } from "./validation";
@@ -39,13 +40,26 @@ export class StudyRoom extends Room {
             if (!player) return;
 
             switch (msg.type) {
-                case "move": {
+                case "move":
                     player.position.x = msg.position.x;
                     player.position.y = msg.position.y;
                     player.position.z = msg.position.z;
                     player.rotationY = msg.rotationY;
                     break;
-                    // update with more msg types later
+                case "timer.set": 
+                case "timer.start":
+                case "timer.pause":
+                case "timer.reset": {
+                    const current = {
+                        durationSec: player.timer.durationSec,
+                        startedAt: player.timer.startedAt === 0 ? null : player.timer.startedAt,
+                        pausedRemainingSec: player.timer.pausedRemainingSec === -1 ? null : player.timer.pausedRemainingSec,
+                    };
+                const next = applyTimer(current, msg, Date.now());
+                player.timer.durationSec = next.durationSec;
+                player.timer.startedAt = next.startedAt ?? 0;
+                player.timer.pausedRemainingSec = next.pausedRemainingSec ?? -1;
+                break;
                 }
             }
         });
