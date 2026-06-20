@@ -1,7 +1,7 @@
 import { useAnimations, useGLTF } from "@react-three/drei";
 import { useEffect, useMemo, useRef } from "react";
 import type { JSX } from "react/jsx-dev-runtime";
-import { Box3, Group, Vector3 } from "three";
+import { Box3, Group, Mesh, MeshBasicMaterial, MeshStandardMaterial, Vector3 } from "three";
 import { clone as cloneSkinned } from "three/examples/jsm/utils/SkeletonUtils.js";
 import characterUrl from "/assets/Goblin_Male.glb?url";
 
@@ -17,7 +17,35 @@ type Props = {
 export function PlayerCharacter({ x, y, z, rotY, isIdle, scale = 1 }: Props): JSX.Element {
     const group = useRef<Group>(null);
     const { scene, animations } = useGLTF(characterUrl);
-    const cloned = useMemo(() => cloneSkinned(scene), [scene]);
+    const cloned = useMemo(() => {
+        const c = cloneSkinned(scene);
+        c.traverse((obj) => {
+            if (!(obj instanceof Mesh)) return;
+            const mats = Array.isArray(obj.material) ? obj.material : [obj.material];
+            const next = mats.map((m) => {
+                console.log("[PlayerCharacter] material", obj.name, m?.type, "emissive" in m ? (m as MeshStandardMaterial).emissive?.getHexString() : "n/a");
+                if (m instanceof MeshBasicMaterial) {
+                    const std = new MeshStandardMaterial({
+                        color: m.color,
+                        map: m.map,
+                        transparent: m.transparent,
+                        opacity: m.opacity,
+                        side: m.side,
+                    });
+                    std.roughness = 1;
+                    std.metalness = 0;
+                    return std;
+                }
+                if (m instanceof MeshStandardMaterial && m.emissive) {
+                    m.emissive.setRGB(0, 0, 0);
+                    m.emissiveIntensity = 0;
+                }
+                return m;
+            });
+            obj.material = Array.isArray(obj.material) ? next : next[0]!;
+        });
+        return c;
+    }, [scene]);
     const { actions } = useAnimations(animations, group);
 
     useEffect(() => {

@@ -137,8 +137,8 @@ function SceneInner({ room, players }: { room: ClientRoom; players: Record<strin
 
     return (
         <>
-            <ambientLight intensity={0.7} />
-            <directionalLight position={[10, 12, 6]} intensity={0.9} castShadow />
+            <ambientLight intensity={50}  color={"#a16e38"}/>
+            {/* <directionalLight position={[10, 12, 6]} intensity={0.9} castShadow /> */}
             <CafeEnvironment />
             <CameraRig state={smooth} />
             {Object.values(players).map((p) => {

@@ -7,13 +7,23 @@ export type RoomBundle = {
     players: Record<string, PlayerView>;
 };
 
-export function useRoom(name: string | null, roomId: string | null, passcode: string | null): RoomBundle | null {
+export type UseRoomResult = {
+    bundle: RoomBundle | null;
+    error: string | null;
+};
+
+export function useRoom(name: string | null, roomId: string | null, passcode: string | null): UseRoomResult {
     const [bundle, setBundle] = useState<RoomBundle | null>(null);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        if (!name || !roomId) return;
+        if (!name || !roomId) {
+            setError(null);
+            return;
+        }
         let cancelled = false;
         let joined: ClientRoom | null = null;
+        setError(null);
 
         joinRoomById(roomId, name, passcode)
             .then((room) => {
@@ -44,7 +54,12 @@ export function useRoom(name: string | null, roomId: string | null, passcode: st
                 };
                 room.onStateChange(snapshot);
             })
-            .catch((err) => console.error("[room] join failed", err));
+            .catch((err: unknown) => {
+                if (cancelled) return;
+                const msg = err instanceof Error ? err.message : String(err);
+                console.error("[room] join failed", err);
+                setError(msg || "Failed to join room");
+            });
 
         return () => {
             cancelled = true;
@@ -53,5 +68,5 @@ export function useRoom(name: string | null, roomId: string | null, passcode: st
         };
     }, [name, roomId, passcode]);
 
-    return bundle;
+    return { bundle, error };
 }

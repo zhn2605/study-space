@@ -1,4 +1,4 @@
-import { Room, type Client } from "colyseus";
+import { Room, ServerError, type Client } from "colyseus";
 import { applyTimer } from "../timer/applyTimer";
 import { registry } from "./registryInstance";
 import { PlayerSchema, RoomStateSchema } from "./schema.js";
@@ -66,8 +66,11 @@ export class StudyRoom extends Room {
     }
 
     onAuth(_client: Client, options: JoinOptions): boolean {
-        if (!this.registryId) return false;
-        return registry.validatePasscode(this.registryId, options.passcode);
+        if (!this.registryId) throw new ServerError(404, "Room not found");
+        if (!registry.validatePasscode(this.registryId, options.passcode)) {
+            throw new ServerError(401, "Wrong passcode");
+        }
+        return true;
     }
 
     onJoin(client: Client, options: JoinOptions): void {
